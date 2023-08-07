@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postAdded } from "./postsSlice";
+import { addNewPost, postAdded } from "./postsSlice";
 import { selectAllUsers } from "../users/usersSlice";
 
 function AddPostForm() {
@@ -9,25 +9,34 @@ function AddPostForm() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("");
+  const [postAddRequestStatus, setPostAddRequestStatus] = useState("idle");
 
   const usersOptions = users.map((user) => (
     <option key={user.id} value={user.id}>
       {user.name}
     </option>
   ));
-  const isValidPost = Boolean(title) && Boolean(content) && Boolean(userId);
+  const canSave = [title, content, userId].every(Boolean) && postAddRequestStatus === "idle";
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleContentChange = (e) => setContent(e.target.value);
   const handlePostSave = () => {
-    if(title && content) {
-      dispatch(postAdded(title, content, userId));
+    if(canSave) {
+      try {
+        setPostAddRequestStatus("pending");
+        dispatch(addNewPost({ title, body: content, userId})).unwrap();
 
-      setTitle("");
-      setContent("");
-      setUserId("");
+        setTitle("");
+        setContent("");
+        setUserId("");
+      } catch (err) {
+        console.log("Failed to save the post!");
+      } finally {
+        setPostAddRequestStatus("idle");
+      }
     }
   };
+
   const handleUserIdChange = (e) => setUserId(e.target.value);
 
   return (
@@ -47,7 +56,7 @@ function AddPostForm() {
         <label htmlFor="postContent">Post Content:</label>
         <textarea id="postContent" name="postContent" value={content} onChange={handleContentChange} />
       
-        <button type="button" onClick={handlePostSave} disabled={!isValidPost}>Save Post</button>
+        <button type="button" onClick={handlePostSave} disabled={!canSave}>Save Post</button>
       </form>
     </section>
   );
