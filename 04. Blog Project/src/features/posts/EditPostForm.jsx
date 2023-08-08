@@ -31,11 +31,11 @@ const EditPostForm = () => {
 
   const canSave = [title, content, userId].every(Boolean) && requestStatus === "idle";
 
-  const onSavePostClicked = () => {
+  const onSavePostClicked = async () => {
     if (canSave) {
       try {
         setRequestStatus("pending")
-        dispatch(updatePost({ id: post.id, title, body: content, userId, reactions: post.reactions })).unwrap();
+        await dispatch(updatePost({ id: post.id, title, body: content, userId, reactions: post.reactions })).unwrap();
 
         setTitle("");
         setContent("");
