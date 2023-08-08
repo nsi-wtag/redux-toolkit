@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { selectPostById, updatePost } from "./postsSlice";
+import { selectPostById, updatePost, deletePost } from "./postsSlice";
 import { selectAllUsers } from "../users/usersSlice";
 
 const EditPostForm = () => {
@@ -31,7 +31,7 @@ const EditPostForm = () => {
 
   const canSave = [title, content, userId].every(Boolean) && requestStatus === "idle";
 
-  const onSavePostClicked = async () => {
+  const handleClickSave = async () => {
     if (canSave) {
       try {
         setRequestStatus("pending")
@@ -49,10 +49,10 @@ const EditPostForm = () => {
     }
   };
 
-  const onDeletePostClicked = () => {
+  const handleClickDelete = async () => {
     try {
       setRequestStatus("pending");
-      // dispatch(deletePost({ id: post.id })).unwrap();
+      await dispatch(deletePost({ id: post.id })).unwrap();
       
       setTitle("");
       setContent("");
@@ -88,11 +88,11 @@ const EditPostForm = () => {
         <label htmlFor="postContent">Content:</label>
         <textarea id="postContent" name="postContent" value={content} onChange={onContentChanged} />
 
-        <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
+        <button type="button" onClick={handleClickSave} disabled={!canSave}>
           Save Post
         </button>
 
-        <button className="deleteButton" type="button" onClick={onDeletePostClicked}>
+        <button className="deleteButton" type="button" onClick={handleClickDelete}>
           Delete Post
         </button>
       </form>
