@@ -35,6 +35,6 @@ function PostsList () {
       {renderedContent}
     </section>
   );
-};
+}
 
 export default PostsList;

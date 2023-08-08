@@ -20,6 +20,7 @@ function AddPostForm() {
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleContentChange = (e) => setContent(e.target.value);
+  const handleUserIdChange = (e) => setUserId(e.target.value);
   const handlePostSave = () => {
     if(canSave) {
       try {
@@ -36,8 +37,6 @@ function AddPostForm() {
       }
     }
   };
-
-  const handleUserIdChange = (e) => setUserId(e.target.value);
 
   return (
     <section>
